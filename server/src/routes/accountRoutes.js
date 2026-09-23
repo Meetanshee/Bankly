@@ -12,24 +12,69 @@ import {
     getTransactionsController
 } from "../controllers/accountController.js";
 
+import {
+    validateAccountId,
+    validateCreateAccount,
+    validateUpdateAccount,
+    validateAmount
+} from "../middleware/validation.js";
+
 const router = express.Router();
 
-router.post("/", createAccountController);
+router.post(
+    "/",
+    validateCreateAccount,
+    createAccountController
+);
 
-router.get("/", getAllAccountsController);
+router.get(
+    "/",
+    getAllAccountsController
+);
 
-router.get("/:id", getAccountByIdController);
+router.get(
+    "/:id",
+    validateAccountId,
+    getAccountByIdController
+);
 
-router.put("/:id", updateAccountController);
+router.put(
+    "/:id",
+    validateAccountId,
+    validateUpdateAccount,
+    updateAccountController
+);
 
-router.delete("/:id", deleteAccountController);
+router.delete(
+    "/:id",
+    validateAccountId,
+    deleteAccountController
+);
 
-router.post("/:id/deposit", depositController);
+router.post(
+    "/:id/deposit",
+    validateAccountId,
+    validateAmount,
+    depositController
+);
 
-router.post("/:id/withdraw", withdrawController);
+router.post(
+    "/:id/withdraw",
+    validateAccountId,
+    validateAmount,
+    withdrawController
+);
 
-router.get("/:id/balance", getBalanceController);
+router.get(
+    "/:id/balance",
+    validateAccountId,
+    getBalanceController
+);
 
-router.get("/:id/transactions", getTransactionsController);
+router.get(
+    "/:id/transactions",
+    validateAccountId,
+    getTransactionsController
+);
 
 export default router;
