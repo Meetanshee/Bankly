@@ -217,13 +217,13 @@ export const withdrawMoney = async (id, amount) => {
         }
 
         if (Number(account.balance) < amount) {
-            const error = new Error(
-                "Insufficient balance"
-            );
+    const error = new Error(
+        `Insufficient balance. Requested: ${amount.toFixed(2)}, Available: ${Number(account.balance).toFixed(2)}`
+    );
 
-            error.statusCode = 400;
-            throw error;
-        }
+    error.statusCode = 422;
+    throw error;
+}
 
         const updateQuery = `
             UPDATE accounts
@@ -288,8 +288,11 @@ export const getAccountBalance = async (id) => {
     return result.rows[0];
 };
 
-export const getTransactionHistory = async (id) => {
-    const query = `
+export const getTransactionHistory = async (
+    id,
+    transactionType
+) => {
+    let query = `
         SELECT
             id,
             account_id,
@@ -299,10 +302,23 @@ export const getTransactionHistory = async (id) => {
             transaction_date
         FROM transactions
         WHERE account_id = $1
+    `;
+
+    const values = [id];
+
+    if (transactionType) {
+        query += `
+            AND transaction_type = $2
+        `;
+
+        values.push(transactionType);
+    }
+
+    query += `
         ORDER BY transaction_date DESC, id DESC;
     `;
 
-    const result = await pool.query(query, [id]);
+    const result = await pool.query(query, values);
 
     return result.rows;
 };

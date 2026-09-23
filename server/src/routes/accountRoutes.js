@@ -16,7 +16,8 @@ import {
     validateAccountId,
     validateCreateAccount,
     validateUpdateAccount,
-    validateAmount
+    validateAmount,
+    validateTransactionType
 } from "../middleware/validation.js";
 
 const router = express.Router();
@@ -74,6 +75,7 @@ router.get(
 router.get(
     "/:id/transactions",
     validateAccountId,
+    validateTransactionType,
     getTransactionsController
 );
 

@@ -10,6 +10,15 @@ import {
     getTransactionHistory
 } from "../services/accountService.js";
 
+import {
+    mapAccount,
+    mapBalance
+} from "../utils/accountMapper.js";
+
+import {
+    mapTransactions
+} from "../utils/transactionMapper.js";
+
 export const createAccountController = async (req, res) => {
     const {
         account_holder_name,
@@ -26,7 +35,7 @@ export const createAccountController = async (req, res) => {
     res.status(201).json({
         success: true,
         message: "Account created successfully",
-        data: account
+        data: mapAccount(account)
     });
 };
 
@@ -35,7 +44,7 @@ export const getAllAccountsController = async (req, res) => {
 
     res.status(200).json({
         success: true,
-        data: accounts
+        data: accounts.map(mapAccount)
     });
 };
 
@@ -53,7 +62,7 @@ export const getAccountByIdController = async (req, res) => {
 
     res.status(200).json({
         success: true,
-        data: account
+        data: mapAccount(account)
     });
 };
 
@@ -83,7 +92,7 @@ export const updateAccountController = async (req, res) => {
     res.status(200).json({
         success: true,
         message: "Account updated successfully",
-        data: account
+        data: mapAccount(account)
     });
 };
 
@@ -99,11 +108,7 @@ export const deleteAccountController = async (req, res) => {
         });
     }
 
-    res.status(200).json({
-        success: true,
-        message: "Account deleted successfully",
-        data: account
-    });
+    res.status(204).send();
 };
 
 export const depositController = async (req, res) => {
@@ -118,7 +123,7 @@ export const depositController = async (req, res) => {
     res.status(200).json({
         success: true,
         message: "Amount deposited successfully",
-        data: account
+        data: mapAccount(account)
     });
 };
 
@@ -134,7 +139,7 @@ export const withdrawController = async (req, res) => {
     res.status(200).json({
         success: true,
         message: "Amount withdrawn successfully",
-        data: account
+        data: mapAccount(account)
     });
 };
 
@@ -152,12 +157,13 @@ export const getBalanceController = async (req, res) => {
 
     res.status(200).json({
         success: true,
-        data: account
+        data: mapBalance(account)
     });
 };
 
 export const getTransactionsController = async (req, res) => {
     const { id } = req.params;
+    const { type } = req.query;
 
     const account = await getAccountById(id);
 
@@ -168,10 +174,17 @@ export const getTransactionsController = async (req, res) => {
         });
     }
 
-    const transactions = await getTransactionHistory(id);
+    const transactionType = type
+        ? type.toUpperCase()
+        : undefined;
+
+    const transactions = await getTransactionHistory(
+        id,
+        transactionType
+    );
 
     res.status(200).json({
         success: true,
-        data: transactions
+        data: mapTransactions(transactions)
     });
 };

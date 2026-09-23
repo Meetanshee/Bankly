@@ -40,12 +40,24 @@ export const validateCreateAccount = (req, res, next) => {
         });
     }
 
-    if (!account_type || !account_type.trim()) {
-        return res.status(400).json({
-            success: false,
-            message: "Account type is required"
-        });
-    }
+    const validAccountTypes = [
+    "SAVINGS",
+    "CURRENT"
+];
+
+if (!account_type) {
+    return res.status(400).json({
+        success: false,
+        message: "Account type is required"
+    });
+}
+
+if (!validAccountTypes.includes(account_type.toUpperCase())) {
+    return res.status(400).json({
+        success: false,
+        message: "Account type must be SAVINGS or CURRENT"
+    });
+}
 
     next();
 };
@@ -71,12 +83,24 @@ export const validateUpdateAccount = (req, res, next) => {
         });
     }
 
-    if (!account_type || !account_type.trim()) {
-        return res.status(400).json({
-            success: false,
-            message: "Account type is required"
-        });
-    }
+   const validAccountTypes = [
+    "SAVINGS",
+    "CURRENT"
+];
+
+if (!account_type) {
+    return res.status(400).json({
+        success: false,
+        message: "Account type is required"
+    });
+}
+
+if (!validAccountTypes.includes(account_type.toUpperCase())) {
+    return res.status(400).json({
+        success: false,
+        message: "Account type must be SAVINGS or CURRENT"
+    });
+}
 
     next();
 };
@@ -96,6 +120,28 @@ export const validateAmount = (req, res, next) => {
         return res.status(400).json({
             success: false,
             message: "Amount must be a number greater than 0"
+        });
+    }
+
+    next();
+};
+
+export const validateTransactionType = (req, res, next) => {
+    const { type } = req.query;
+
+    if (!type) {
+        return next();
+    }
+
+    const validTypes = [
+        "DEPOSIT",
+        "WITHDRAW"
+    ];
+
+    if (!validTypes.includes(type.toUpperCase())) {
+        return res.status(400).json({
+            success: false,
+            message: "Transaction type must be DEPOSIT or WITHDRAW"
         });
     }
 
