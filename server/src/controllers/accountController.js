@@ -19,19 +19,23 @@ import {
     mapTransactions
 } from "../utils/transactionMapper.js";
 
-export const createAccountController = async (req, res) => {
-    const {
-    account_holder_name,
-    account_type
-} = req.body;
 
-const email = req.user.email;
+export const createAccountController = async (
+    req,
+    res
+) => {
+    const {
+        account_holder_name,
+        account_type
+    } = req.body;
+
+    const userId = req.user.id;
 
     const account = await createAccount(
-    account_holder_name,
-    email,
-    account_type
-);
+        userId,
+        account_holder_name,
+        account_type.toUpperCase()
+    );
 
     res.status(201).json({
         success: true,
@@ -40,10 +44,14 @@ const email = req.user.email;
     });
 };
 
-export const getAllAccountsController = async (req, res) => {
-    const accounts = await getAllAccounts(
-    req.user.email
-);
+
+export const getAllAccountsController = async (
+    req,
+    res
+) => {
+    const userId = req.user.id;
+
+    const accounts = await getAllAccounts(userId);
 
     res.status(200).json({
         success: true,
@@ -51,13 +59,18 @@ export const getAllAccountsController = async (req, res) => {
     });
 };
 
-export const getAccountByIdController = async (req, res) => {
+
+export const getAccountByIdController = async (
+    req,
+    res
+) => {
     const { id } = req.params;
+    const userId = req.user.id;
 
     const account = await getAccountById(
-    id,
-    req.user.email
-);
+        id,
+        userId
+    );
 
     if (!account) {
         return res.status(404).json({
@@ -71,23 +84,18 @@ export const getAccountByIdController = async (req, res) => {
         data: mapAccount(account)
     });
 };
+
 
 export const updateAccountController = async (req, res) => {
     const { id } = req.params;
-
-    const {
-        account_holder_name,
-        email,
-        account_type
-    } = req.body;
+    const { account_holder_name } = req.body;
+    const userId = req.user.id;
 
     const account = await updateAccount(
-    id,
-    account_holder_name,
-    email,
-    account_type,
-    req.user.email
-);
+        id,
+        account_holder_name,
+        userId
+    );
 
     if (!account) {
         return res.status(404).json({
@@ -98,18 +106,24 @@ export const updateAccountController = async (req, res) => {
 
     res.status(200).json({
         success: true,
-        message: "Account updated successfully",
+        message: "Account holder details updated successfully",
         data: mapAccount(account)
     });
 };
 
-export const deleteAccountController = async (req, res) => {
+
+export const deleteAccountController = async (
+    req,
+    res
+) => {
     const { id } = req.params;
 
-   const account = await deleteAccount(
-    id,
-    req.user.email
-);
+    const userId = req.user.id;
+
+    const account = await deleteAccount(
+        id,
+        userId
+    );
 
     if (!account) {
         return res.status(404).json({
@@ -118,52 +132,70 @@ export const deleteAccountController = async (req, res) => {
         });
     }
 
-    res.status(204).send();
+    return res.status(204).send();
 };
 
-export const depositController = async (req, res) => {
+
+export const depositController = async (
+    req,
+    res
+) => {
     const { id } = req.params;
     const { amount } = req.body;
 
-   const account = await depositMoney(
-    id,
-    Number(amount),
-    req.user.email
-);
+    const userId = req.user.id;
+
+    const account = await depositMoney(
+        id,
+        Number(amount),
+        userId
+    );
 
     res.status(200).json({
         success: true,
-        message: "Amount deposited successfully",
+        message: "Deposit successful",
         data: mapAccount(account)
     });
 };
 
-export const withdrawController = async (req, res) => {
+
+export const withdrawController = async (
+    req,
+    res
+) => {
     const { id } = req.params;
     const { amount } = req.body;
 
-   const account = await withdrawMoney(
-    id,
-    Number(amount),
-    req.user.email
-);
+    const userId = req.user.id;
+
+    const account = await withdrawMoney(
+        id,
+        Number(amount),
+        userId
+    );
 
     res.status(200).json({
         success: true,
-        message: "Amount withdrawn successfully",
+        message: "Withdrawal successful",
         data: mapAccount(account)
     });
 };
 
-export const getBalanceController = async (req, res) => {
+
+export const getBalanceController = async (
+    req,
+    res
+) => {
     const { id } = req.params;
 
-    const account = await getAccountBalance(
-    id,
-    req.user.email
-);
+    const userId = req.user.id;
 
-    if (!account) {
+    const balance = await getAccountBalance(
+        id,
+        userId
+    );
+
+    if (!balance) {
         return res.status(404).json({
             success: false,
             message: "Account not found"
@@ -172,18 +204,26 @@ export const getBalanceController = async (req, res) => {
 
     res.status(200).json({
         success: true,
-        data: mapBalance(account)
+        data: mapBalance(balance)
     });
 };
 
-export const getTransactionsController = async (req, res) => {
+
+export const getTransactionsController = async (
+    req,
+    res
+) => {
     const { id } = req.params;
-    const { type } = req.query;
+
+    const transactionType =
+        req.query.type?.toUpperCase();
+
+    const userId = req.user.id;
 
     const account = await getAccountById(
-    id,
-    req.user.email
-);
+        id,
+        userId
+    );
 
     if (!account) {
         return res.status(404).json({
@@ -192,15 +232,12 @@ export const getTransactionsController = async (req, res) => {
         });
     }
 
-    const transactionType = type
-        ? type.toUpperCase()
-        : undefined;
-
-    const transactions = await getTransactionHistory(
-    id,
-    req.user.email,
-    transactionType
-);
+    const transactions =
+        await getTransactionHistory(
+            id,
+            userId,
+            transactionType
+        );
 
     res.status(200).json({
         success: true,

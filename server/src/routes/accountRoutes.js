@@ -20,9 +20,12 @@ import {
     validateTransactionType
 } from "../middleware/validation.js";
 
-import { authenticate } from "../middleware/authMiddleware.js";
+import {
+    authenticate
+} from "../middleware/authMiddleware.js";
 
 const router = express.Router();
+
 
 router.post(
     "/",
@@ -31,11 +34,13 @@ router.post(
     createAccountController
 );
 
+
 router.get(
     "/",
     authenticate,
     getAllAccountsController
 );
+
 
 router.get(
     "/:id",
@@ -43,6 +48,7 @@ router.get(
     validateAccountId,
     getAccountByIdController
 );
+
 
 router.put(
     "/:id",
@@ -52,12 +58,14 @@ router.put(
     updateAccountController
 );
 
+
 router.delete(
     "/:id",
     authenticate,
     validateAccountId,
     deleteAccountController
 );
+
 
 router.post(
     "/:id/deposit",
@@ -67,6 +75,7 @@ router.post(
     depositController
 );
 
+
 router.post(
     "/:id/withdraw",
     authenticate,
@@ -75,12 +84,14 @@ router.post(
     withdrawController
 );
 
+
 router.get(
     "/:id/balance",
     authenticate,
     validateAccountId,
     getBalanceController
 );
+
 
 router.get(
     "/:id/transactions",
@@ -89,5 +100,6 @@ router.get(
     validateTransactionType,
     getTransactionsController
 );
+
 
 export default router;

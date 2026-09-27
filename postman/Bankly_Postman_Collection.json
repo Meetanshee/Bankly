@@ -1,0 +1,27 @@
+{
+  "info": {
+    "name": "Bankly API",
+    "description": "Postman collection for the Bankly PERN banking application.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:5000/api"},
+    {"key": "token", "value": ""},
+    {"key": "accountId", "value": ""}
+  ],
+  "item": [
+    {"name": "Register", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123\"\n}"}, "url": "{{baseUrl}}/auth/register"}},
+    {"name": "Login", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123\"\n}"}, "url": "{{baseUrl}}/auth/login"}},
+    {"name": "Get Accounts", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/accounts"}},
+    {"name": "Create Account", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"account_holder_name\": \"Test User\",\n  \"account_type\": \"SAVINGS\"\n}"}, "url": "{{baseUrl}}/accounts"}},
+    {"name": "Get Account", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/accounts/{{accountId}}"}},
+    {"name": "Update Account", "request": {"method": "PUT", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"account_holder_name\": \"Updated User\"\n}"}, "url": "{{baseUrl}}/accounts/{{accountId}}"}},
+    {"name": "Get Balance", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/accounts/{{accountId}}/balance"}},
+    {"name": "Deposit", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"amount\": 1000\n}"}, "url": "{{baseUrl}}/accounts/{{accountId}}/deposit"}},
+    {"name": "Withdraw", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"amount\": 250\n}"}, "url": "{{baseUrl}}/accounts/{{accountId}}/withdraw"}},
+    {"name": "Get Transactions", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/accounts/{{accountId}}/transactions"}},
+    {"name": "Deposit Transactions", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/accounts/{{accountId}}/transactions?type=DEPOSIT"}},
+    {"name": "Withdrawal Transactions", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/accounts/{{accountId}}/transactions?type=WITHDRAW"}},
+    {"name": "Delete Account", "request": {"method": "DELETE", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/accounts/{{accountId}}"}}
+  ]
+}

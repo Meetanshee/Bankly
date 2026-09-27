@@ -22,52 +22,48 @@ export const validateAccountId = (req, res, next) => {
 export const validateCreateAccount = (req, res, next) => {
     const {
         account_holder_name,
-        email,
         account_type
     } = req.body;
 
-    if (!account_holder_name || !account_holder_name.trim()) {
+    if (
+        !account_holder_name ||
+        !account_holder_name.trim()
+    ) {
         return res.status(400).json({
             success: false,
             message: "Account holder name is required"
         });
     }
 
-    if (!email || !isValidEmail(email)) {
+    const validAccountTypes = [
+        "SAVINGS",
+        "CURRENT"
+    ];
+
+    if (!account_type) {
         return res.status(400).json({
             success: false,
-            message: "Invalid email"
+            message: "Account type is required"
         });
     }
 
-    const validAccountTypes = [
-    "SAVINGS",
-    "CURRENT"
-];
-
-if (!account_type) {
-    return res.status(400).json({
-        success: false,
-        message: "Account type is required"
-    });
-}
-
-if (!validAccountTypes.includes(account_type.toUpperCase())) {
-    return res.status(400).json({
-        success: false,
-        message: "Account type must be SAVINGS or CURRENT"
-    });
-}
+    if (
+        !validAccountTypes.includes(
+            account_type.toUpperCase()
+        )
+    ) {
+        return res.status(400).json({
+            success: false,
+            message:
+                "Account type must be SAVINGS or CURRENT"
+        });
+    }
 
     next();
 };
 
 export const validateUpdateAccount = (req, res, next) => {
-    const {
-        account_holder_name,
-        email,
-        account_type
-    } = req.body;
+    const { account_holder_name } = req.body;
 
     if (!account_holder_name || !account_holder_name.trim()) {
         return res.status(400).json({
@@ -75,32 +71,6 @@ export const validateUpdateAccount = (req, res, next) => {
             message: "Account holder name is required"
         });
     }
-
-    if (!email || !isValidEmail(email)) {
-        return res.status(400).json({
-            success: false,
-            message: "Invalid email"
-        });
-    }
-
-   const validAccountTypes = [
-    "SAVINGS",
-    "CURRENT"
-];
-
-if (!account_type) {
-    return res.status(400).json({
-        success: false,
-        message: "Account type is required"
-    });
-}
-
-if (!validAccountTypes.includes(account_type.toUpperCase())) {
-    return res.status(400).json({
-        success: false,
-        message: "Account type must be SAVINGS or CURRENT"
-    });
-}
 
     next();
 };

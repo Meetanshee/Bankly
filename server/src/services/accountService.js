@@ -1,9 +1,10 @@
 import pool from "../config/db.js";
 import generateAccountNumber from "../utils/accountNumberGenerator.js";
 
+// Create a new bank account
 export const createAccount = async (
+    userId,
     accountHolderName,
-    email,
     accountType
 ) => {
     let accountNumber;
@@ -15,9 +16,9 @@ export const createAccount = async (
         const query = `
             INSERT INTO accounts
             (
+                user_id,
                 account_number,
                 account_holder_name,
-                email,
                 account_type
             )
             VALUES ($1, $2, $3, $4)
@@ -27,9 +28,9 @@ export const createAccount = async (
         `;
 
         result = await pool.query(query, [
+            userId,
             accountNumber,
             accountHolderName,
-            email,
             accountType
         ]);
 
@@ -41,90 +42,93 @@ export const createAccount = async (
     return result.rows[0];
 };
 
-export const getAllAccounts = async (email) => {
+
+// Get all accounts belonging to logged-in user
+export const getAllAccounts = async (userId) => {
     const query = `
         SELECT *
         FROM accounts
-        WHERE email = $1
+        WHERE user_id = $1
         ORDER BY id;
     `;
 
-    const result = await pool.query(query, [email]);
+    const result = await pool.query(query, [userId]);
 
     return result.rows;
 };
 
+
+// Get one account belonging to logged-in user
 export const getAccountById = async (
     id,
-    email
+    userId
 ) => {
     const query = `
         SELECT *
         FROM accounts
         WHERE id = $1
-        AND email = $2;
-    `;
-
-    const result = await pool.query(
-        query,
-        [id, email]
-    );
-
-    return result.rows[0];
-};
-
-export const updateAccount = async (
-    id,
-    accountHolderName,
-    email,
-    accountType,
-    currentUserEmail
-) => {
-    const query = `
-        UPDATE accounts
-        SET
-            account_holder_name = $1,
-            email = $2,
-            account_type = $3
-        WHERE id = $4
-        AND email = $5
-        RETURNING *;
+        AND user_id = $2;
     `;
 
     const result = await pool.query(query, [
-        accountHolderName,
-        email,
-        accountType,
         id,
-        currentUserEmail
+        userId
     ]);
 
     return result.rows[0];
 };
 
-export const deleteAccount = async (
+
+// Update account information
+export const updateAccount = async (
     id,
-    email
+    accountHolderName,
+    userId
 ) => {
     const query = `
-        DELETE FROM accounts
-        WHERE id = $1
-        AND email = $2
+        UPDATE accounts
+        SET account_holder_name = $1
+        WHERE id = $2
+        AND user_id = $3
         RETURNING *;
     `;
 
-    const result = await pool.query(
-        query,
-        [id, email]
-    );
+    const result = await pool.query(query, [
+        accountHolderName,
+        id,
+        userId
+    ]);
 
     return result.rows[0];
 };
 
+
+// Permanently delete account
+export const deleteAccount = async (
+    id,
+    userId
+) => {
+    const query = `
+        DELETE FROM accounts
+        WHERE id = $1
+        AND user_id = $2
+        RETURNING *;
+    `;
+
+    const result = await pool.query(query, [
+        id,
+        userId
+    ]);
+
+    return result.rows[0];
+};
+
+
+// Deposit money
 export const depositMoney = async (
     id,
     amount,
-    email
+    userId
 ) => {
     const client = await pool.connect();
 
@@ -135,27 +139,35 @@ export const depositMoney = async (
             SELECT *
             FROM accounts
             WHERE id = $1
-            AND email = $2
+            AND user_id = $2
             FOR UPDATE;
         `;
 
-            const accountResult = await client.query(
+        const accountResult = await client.query(
             accountQuery,
-            [id, email]
-            );
+            [id, userId]
+        );
 
         if (accountResult.rows.length === 0) {
-            const error = new Error("Account not found");
+            const error = new Error(
+                "Account not found"
+            );
+
             error.statusCode = 404;
+
             throw error;
         }
 
-        if (!Number.isFinite(amount) || amount <= 0) {
+        if (
+            !Number.isFinite(amount) ||
+            amount <= 0
+        ) {
             const error = new Error(
                 "Deposit amount must be greater than 0"
             );
 
             error.statusCode = 400;
+
             throw error;
         }
 
@@ -163,109 +175,18 @@ export const depositMoney = async (
             UPDATE accounts
             SET balance = balance + $1
             WHERE id = $2
+            AND user_id = $3
             RETURNING *;
         `;
 
-        const updatedAccountResult = await client.query(
-            updateQuery,
-            [amount, id]
-        );
-
-       const updatedAccount = updatedAccountResult.rows[0];
-
-            const transactionQuery = `
-                INSERT INTO transactions
-                (
-                    account_id,
-                    transaction_type,
-                    amount,
-                    available_balance
-                )
-                VALUES ($1, $2, $3, $4)
-                RETURNING *;
-            `;
-
-        await client.query(transactionQuery, [
-            id,
-            "DEPOSIT",
-            amount,
-            updatedAccount.balance
-        ]);
-        await client.query("COMMIT");
-
-        return updatedAccountResult.rows[0];
-
-    } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-
-    } finally {
-        client.release();
-    }
-};
-
-export const withdrawMoney = async (
-    id,
-    amount,
-    email
-) => {
-    const client = await pool.connect();
-
-    try {
-        await client.query("BEGIN");
-
-        const accountQuery = `
-            SELECT *
-            FROM accounts
-            WHERE id = $1
-            AND email = $2
-            FOR UPDATE;
-        `;
-
-        const accountResult = await client.query(
-            accountQuery,
-            [id, email]
-             );
-
-        if (accountResult.rows.length === 0) {
-            const error = new Error("Account not found");
-            error.statusCode = 404;
-            throw error;
-        }
-
-        const account = accountResult.rows[0];
-
-        if (!Number.isFinite(amount) || amount <= 0) {
-            const error = new Error(
-                "Withdrawal amount must be greater than 0"
+        const updatedAccountResult =
+            await client.query(
+                updateQuery,
+                [amount, id, userId]
             );
 
-            error.statusCode = 400;
-            throw error;
-        }
-
-        if (Number(account.balance) < amount) {
-    const error = new Error(
-        `Insufficient balance. Requested: ${amount.toFixed(2)}, Available: ${Number(account.balance).toFixed(2)}`
-    );
-
-    error.statusCode = 422;
-    throw error;
-}
-
-        const updateQuery = `
-            UPDATE accounts
-            SET balance = balance - $1
-            WHERE id = $2
-            RETURNING *;
-        `;
-
-        const updatedAccountResult = await client.query(
-            updateQuery,
-            [amount, id]
-        );
-
-        const updatedAccount = updatedAccountResult.rows[0];
+        const updatedAccount =
+            updatedAccountResult.rows[0];
 
         const transactionQuery = `
             INSERT INTO transactions
@@ -279,31 +200,160 @@ export const withdrawMoney = async (
             RETURNING *;
         `;
 
-        await client.query(transactionQuery, [
-            id,
-            "WITHDRAW",
-            amount,
-            updatedAccount.balance
-        ]);
+        await client.query(
+            transactionQuery,
+            [
+                id,
+                "DEPOSIT",
+                amount,
+                updatedAccount.balance
+            ]
+        );
 
         await client.query("COMMIT");
 
-        return updatedAccountResult.rows[0];
+        return updatedAccount;
 
     } catch (error) {
+
         await client.query("ROLLBACK");
+
         throw error;
 
     } finally {
+
         client.release();
+
     }
 };
 
 
+// Withdraw money
+export const withdrawMoney = async (
+    id,
+    amount,
+    userId
+) => {
+    const client = await pool.connect();
 
+    try {
+        await client.query("BEGIN");
+
+        const accountQuery = `
+            SELECT *
+            FROM accounts
+            WHERE id = $1
+            AND user_id = $2
+            FOR UPDATE;
+        `;
+
+        const accountResult = await client.query(
+            accountQuery,
+            [id, userId]
+        );
+
+        if (accountResult.rows.length === 0) {
+            const error = new Error(
+                "Account not found"
+            );
+
+            error.statusCode = 404;
+
+            throw error;
+        }
+
+        const account = accountResult.rows[0];
+
+        if (
+            !Number.isFinite(amount) ||
+            amount <= 0
+        ) {
+            const error = new Error(
+                "Withdrawal amount must be greater than 0"
+            );
+
+            error.statusCode = 400;
+
+            throw error;
+        }
+
+        if (
+            Number(account.balance) < amount
+        ) {
+            const error = new Error(
+                `Insufficient balance. Requested: ${amount.toFixed(
+                    2
+                )}, Available: ${Number(
+                    account.balance
+                ).toFixed(2)}`
+            );
+
+            error.statusCode = 422;
+
+            throw error;
+        }
+
+        const updateQuery = `
+            UPDATE accounts
+            SET balance = balance - $1
+            WHERE id = $2
+            AND user_id = $3
+            RETURNING *;
+        `;
+
+        const updatedAccountResult =
+            await client.query(
+                updateQuery,
+                [amount, id, userId]
+            );
+
+        const updatedAccount =
+            updatedAccountResult.rows[0];
+
+        const transactionQuery = `
+            INSERT INTO transactions
+            (
+                account_id,
+                transaction_type,
+                amount,
+                available_balance
+            )
+            VALUES ($1, $2, $3, $4)
+            RETURNING *;
+        `;
+
+        await client.query(
+            transactionQuery,
+            [
+                id,
+                "WITHDRAW",
+                amount,
+                updatedAccount.balance
+            ]
+        );
+
+        await client.query("COMMIT");
+
+        return updatedAccount;
+
+    } catch (error) {
+
+        await client.query("ROLLBACK");
+
+        throw error;
+
+    } finally {
+
+        client.release();
+
+    }
+};
+
+
+// Get account balance
 export const getAccountBalance = async (
     id,
-    email
+    userId
 ) => {
     const query = `
         SELECT
@@ -312,20 +362,22 @@ export const getAccountBalance = async (
             balance
         FROM accounts
         WHERE id = $1
-        AND email = $2;
+        AND user_id = $2;
     `;
 
     const result = await pool.query(
         query,
-        [id, email]
+        [id, userId]
     );
 
     return result.rows[0];
 };
 
+
+// Get transaction history
 export const getTransactionHistory = async (
     id,
-    email,
+    userId,
     transactionType
 ) => {
     let query = `
@@ -340,10 +392,13 @@ export const getTransactionHistory = async (
         INNER JOIN accounts a
             ON t.account_id = a.id
         WHERE t.account_id = $1
-        AND a.email = $2
+        AND a.user_id = $2
     `;
 
-    const values = [id, email];
+    const values = [
+        id,
+        userId
+    ];
 
     if (transactionType) {
         query += `
@@ -354,7 +409,9 @@ export const getTransactionHistory = async (
     }
 
     query += `
-        ORDER BY t.transaction_date DESC, t.id DESC;
+        ORDER BY
+            t.transaction_date DESC,
+            t.id DESC;
     `;
 
     const result = await pool.query(
