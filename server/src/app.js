@@ -1,7 +1,9 @@
 import express from "express";
 import cors from "cors";
 
+import authRoutes from "./routes/authRoutes.js";
 import accountRoutes from "./routes/accountRoutes.js";
+
 import { notFound } from "./middleware/notFound.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
@@ -16,6 +18,8 @@ app.get("/", (req, res) => {
         message: "Banking API is running"
     });
 });
+
+app.use("/api/auth", authRoutes);
 
 app.use("/api/accounts", accountRoutes);
 

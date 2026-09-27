@@ -41,26 +41,34 @@ export const createAccount = async (
     return result.rows[0];
 };
 
-export const getAllAccounts = async () => {
+export const getAllAccounts = async (email) => {
     const query = `
         SELECT *
         FROM accounts
+        WHERE email = $1
         ORDER BY id;
     `;
 
-    const result = await pool.query(query);
+    const result = await pool.query(query, [email]);
 
     return result.rows;
 };
 
-export const getAccountById = async (id) => {
+export const getAccountById = async (
+    id,
+    email
+) => {
     const query = `
         SELECT *
         FROM accounts
-        WHERE id = $1;
+        WHERE id = $1
+        AND email = $2;
     `;
 
-    const result = await pool.query(query, [id]);
+    const result = await pool.query(
+        query,
+        [id, email]
+    );
 
     return result.rows[0];
 };
@@ -69,7 +77,8 @@ export const updateAccount = async (
     id,
     accountHolderName,
     email,
-    accountType
+    accountType,
+    currentUserEmail
 ) => {
     const query = `
         UPDATE accounts
@@ -78,6 +87,7 @@ export const updateAccount = async (
             email = $2,
             account_type = $3
         WHERE id = $4
+        AND email = $5
         RETURNING *;
     `;
 
@@ -85,25 +95,37 @@ export const updateAccount = async (
         accountHolderName,
         email,
         accountType,
-        id
+        id,
+        currentUserEmail
     ]);
 
     return result.rows[0];
 };
 
-export const deleteAccount = async (id) => {
+export const deleteAccount = async (
+    id,
+    email
+) => {
     const query = `
         DELETE FROM accounts
         WHERE id = $1
+        AND email = $2
         RETURNING *;
     `;
 
-    const result = await pool.query(query, [id]);
+    const result = await pool.query(
+        query,
+        [id, email]
+    );
 
     return result.rows[0];
 };
 
-export const depositMoney = async (id, amount) => {
+export const depositMoney = async (
+    id,
+    amount,
+    email
+) => {
     const client = await pool.connect();
 
     try {
@@ -113,13 +135,14 @@ export const depositMoney = async (id, amount) => {
             SELECT *
             FROM accounts
             WHERE id = $1
+            AND email = $2
             FOR UPDATE;
         `;
 
-        const accountResult = await client.query(
+            const accountResult = await client.query(
             accountQuery,
-            [id]
-        );
+            [id, email]
+            );
 
         if (accountResult.rows.length === 0) {
             const error = new Error("Account not found");
@@ -181,7 +204,11 @@ export const depositMoney = async (id, amount) => {
     }
 };
 
-export const withdrawMoney = async (id, amount) => {
+export const withdrawMoney = async (
+    id,
+    amount,
+    email
+) => {
     const client = await pool.connect();
 
     try {
@@ -191,13 +218,14 @@ export const withdrawMoney = async (id, amount) => {
             SELECT *
             FROM accounts
             WHERE id = $1
+            AND email = $2
             FOR UPDATE;
         `;
 
         const accountResult = await client.query(
             accountQuery,
-            [id]
-        );
+            [id, email]
+             );
 
         if (accountResult.rows.length === 0) {
             const error = new Error("Account not found");
@@ -273,52 +301,66 @@ export const withdrawMoney = async (id, amount) => {
 
 
 
-export const getAccountBalance = async (id) => {
+export const getAccountBalance = async (
+    id,
+    email
+) => {
     const query = `
         SELECT
             id,
             account_number,
             balance
         FROM accounts
-        WHERE id = $1;
+        WHERE id = $1
+        AND email = $2;
     `;
 
-    const result = await pool.query(query, [id]);
+    const result = await pool.query(
+        query,
+        [id, email]
+    );
 
     return result.rows[0];
 };
 
 export const getTransactionHistory = async (
     id,
+    email,
     transactionType
 ) => {
     let query = `
         SELECT
-            id,
-            account_id,
-            transaction_type,
-            amount,
-            available_balance,
-            transaction_date
-        FROM transactions
-        WHERE account_id = $1
+            t.id,
+            t.account_id,
+            t.transaction_type,
+            t.amount,
+            t.available_balance,
+            t.transaction_date
+        FROM transactions t
+        INNER JOIN accounts a
+            ON t.account_id = a.id
+        WHERE t.account_id = $1
+        AND a.email = $2
     `;
 
-    const values = [id];
+    const values = [id, email];
 
     if (transactionType) {
         query += `
-            AND transaction_type = $2
+            AND t.transaction_type = $3
         `;
 
         values.push(transactionType);
     }
 
     query += `
-        ORDER BY transaction_date DESC, id DESC;
+        ORDER BY t.transaction_date DESC, t.id DESC;
     `;
 
-    const result = await pool.query(query, values);
+    const result = await pool.query(
+        query,
+        values
+    );
 
     return result.rows;
 };

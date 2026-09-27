@@ -21,16 +21,17 @@ import {
 
 export const createAccountController = async (req, res) => {
     const {
-        account_holder_name,
-        email,
-        account_type
-    } = req.body;
+    account_holder_name,
+    account_type
+} = req.body;
+
+const email = req.user.email;
 
     const account = await createAccount(
-        account_holder_name,
-        email,
-        account_type
-    );
+    account_holder_name,
+    email,
+    account_type
+);
 
     res.status(201).json({
         success: true,
@@ -40,7 +41,9 @@ export const createAccountController = async (req, res) => {
 };
 
 export const getAllAccountsController = async (req, res) => {
-    const accounts = await getAllAccounts();
+    const accounts = await getAllAccounts(
+    req.user.email
+);
 
     res.status(200).json({
         success: true,
@@ -51,7 +54,10 @@ export const getAllAccountsController = async (req, res) => {
 export const getAccountByIdController = async (req, res) => {
     const { id } = req.params;
 
-    const account = await getAccountById(id);
+    const account = await getAccountById(
+    id,
+    req.user.email
+);
 
     if (!account) {
         return res.status(404).json({
@@ -76,11 +82,12 @@ export const updateAccountController = async (req, res) => {
     } = req.body;
 
     const account = await updateAccount(
-        id,
-        account_holder_name,
-        email,
-        account_type
-    );
+    id,
+    account_holder_name,
+    email,
+    account_type,
+    req.user.email
+);
 
     if (!account) {
         return res.status(404).json({
@@ -99,7 +106,10 @@ export const updateAccountController = async (req, res) => {
 export const deleteAccountController = async (req, res) => {
     const { id } = req.params;
 
-    const account = await deleteAccount(id);
+   const account = await deleteAccount(
+    id,
+    req.user.email
+);
 
     if (!account) {
         return res.status(404).json({
@@ -115,10 +125,11 @@ export const depositController = async (req, res) => {
     const { id } = req.params;
     const { amount } = req.body;
 
-    const account = await depositMoney(
-        id,
-        Number(amount)
-    );
+   const account = await depositMoney(
+    id,
+    Number(amount),
+    req.user.email
+);
 
     res.status(200).json({
         success: true,
@@ -131,10 +142,11 @@ export const withdrawController = async (req, res) => {
     const { id } = req.params;
     const { amount } = req.body;
 
-    const account = await withdrawMoney(
-        id,
-        Number(amount)
-    );
+   const account = await withdrawMoney(
+    id,
+    Number(amount),
+    req.user.email
+);
 
     res.status(200).json({
         success: true,
@@ -146,7 +158,10 @@ export const withdrawController = async (req, res) => {
 export const getBalanceController = async (req, res) => {
     const { id } = req.params;
 
-    const account = await getAccountBalance(id);
+    const account = await getAccountBalance(
+    id,
+    req.user.email
+);
 
     if (!account) {
         return res.status(404).json({
@@ -165,7 +180,10 @@ export const getTransactionsController = async (req, res) => {
     const { id } = req.params;
     const { type } = req.query;
 
-    const account = await getAccountById(id);
+    const account = await getAccountById(
+    id,
+    req.user.email
+);
 
     if (!account) {
         return res.status(404).json({
@@ -179,9 +197,10 @@ export const getTransactionsController = async (req, res) => {
         : undefined;
 
     const transactions = await getTransactionHistory(
-        id,
-        transactionType
-    );
+    id,
+    req.user.email,
+    transactionType
+);
 
     res.status(200).json({
         success: true,
