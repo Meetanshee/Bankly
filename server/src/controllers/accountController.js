@@ -132,10 +132,7 @@ export const deleteAccountController = async (
         });
     }
 
-    return res.status(204).json({
-        success:true,
-        message:"Account Deleted"
-    });
+    return res.status(204).send();
 };
 
 
