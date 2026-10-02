@@ -129,4 +129,4 @@ The current scope intentionally does not include mobile-number authentication, O
 
 ## Status
 
-Core banking functionality and the React dashboard are implemented. Final QA and deployment should be completed before presenting the project as production-ready.
+Core banking functionality and the React dashboard are implemented. Final QA and deployment completed before presenting the project as production-ready.
