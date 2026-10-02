@@ -4,12 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function Register() {
-
     const navigate = useNavigate();
 
-    const {
-        register
-    } = useAuth();
+    const { register } = useAuth();
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -17,12 +14,10 @@ function Register() {
 
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
-
     const [loading, setLoading] = useState(false);
-
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = async (event) => {
-
         event.preventDefault();
 
         setError("");
@@ -30,7 +25,6 @@ function Register() {
         setLoading(true);
 
         try {
-
             await register(
                 name,
                 email,
@@ -46,138 +40,298 @@ function Register() {
             }, 1200);
 
         } catch (error) {
-
             setError(
                 error.response?.data?.message ||
                 "Registration failed"
             );
-
         } finally {
-
             setLoading(false);
-
         }
     };
 
-
     return (
-        <div className="auth-page">
+        <div className="auth-page modern-auth">
 
-            <div className="auth-card">
+            {/* LEFT BRAND PANEL */}
 
-                <h1>Create Account</h1>
+            <div className="auth-brand-panel register-brand-panel">
 
-                <p className="auth-subtitle">
-                    Create your banking account
-                </p>
+                <div className="auth-brand">
 
-
-                {error && (
-                    <div className="error-message">
-                        {error}
-                    </div>
-                )}
-
-
-                {success && (
-                    <div className="success-message">
-                        {success}
-                    </div>
-                )}
-
-
-                <form
-                    onSubmit={handleSubmit}
-                >
-
-                    <div className="form-group">
-
-                        <label>
-                            Name
-                        </label>
-
-                        <input
-                            type="text"
-                            placeholder="Enter your name"
-                            value={name}
-                            onChange={(event) =>
-                                setName(
-                                    event.target.value
-                                )
-                            }
-                            required
-                        />
-
+                    <div className="auth-brand-icon">
+                        B
                     </div>
 
+                    <span>Bankly</span>
 
-                    <div className="form-group">
+                </div>
 
-                        <label>
-                            Email
-                        </label>
+                <div className="auth-brand-content">
 
-                        <input
-                            type="email"
-                            placeholder="Enter your email"
-                            value={email}
-                            onChange={(event) =>
-                                setEmail(
-                                    event.target.value
-                                )
-                            }
-                            required
-                        />
+                    <span className="auth-eyebrow">
+                        YOUR DIGITAL BANKING JOURNEY
+                    </span>
+
+                    <h1>
+                        Start Your
+                        <br />
+                        Banking <span>Journey.</span>
+                    </h1>
+
+                    <p>
+                        Create your Bankly account and experience
+                        simple, secure and modern banking.
+                    </p>
+
+
+                    <div className="auth-features">
+
+                        <div className="auth-feature">
+
+                            <div className="feature-icon">
+                                ⚡
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Quick Registration
+                                </strong>
+
+                                <span>
+                                    Get started in just a few steps.
+                                </span>
+                            </div>
+
+                        </div>
+
+
+                        <div className="auth-feature">
+
+                            <div className="feature-icon">
+                                ◈
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Multiple Bank Accounts
+                                </strong>
+
+                                <span>
+                                    Create and manage multiple accounts.
+                                </span>
+                            </div>
+
+                        </div>
+
+
+                        <div className="auth-feature">
+
+                            <div className="feature-icon">
+                                ≡
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Full Transaction History
+                                </strong>
+
+                                <span>
+                                    Keep track of every movement.
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div className="auth-brand-footer">
+                    © 2026 Bankly. Smart banking, simplified.
+                </div>
+
+            </div>
+
+
+            {/* REGISTER FORM */}
+
+            <div className="auth-form-panel">
+
+                <div className="auth-form-container">
+
+                    <div className="mobile-auth-brand">
+
+                        <div className="auth-brand-icon">
+                            B
+                        </div>
+
+                        <span>Bankly</span>
 
                     </div>
 
 
-                    <div className="form-group">
+                    <div className="auth-heading">
 
-                        <label>
-                            Password
-                        </label>
+                        <span className="auth-form-label">
+                            GET STARTED
+                        </span>
 
-                        <input
-                            type="password"
-                            placeholder="At least 6 characters"
-                            value={password}
-                            onChange={(event) =>
-                                setPassword(
-                                    event.target.value
-                                )
-                            }
-                            minLength={6}
-                            required
-                        />
+                        <h2>
+                            Create your account
+                        </h2>
+
+                        <p>
+                            Join Bankly and take control of your
+                            financial journey.
+                        </p>
 
                     </div>
 
 
-                    <button
-                        type="submit"
-                        className="primary-button"
-                        disabled={loading}
-                    >
-                        {loading
-                            ? "Creating account..."
-                            : "Register"}
-                    </button>
-
-                </form>
+                    {error && (
+                        <div className="modern-error">
+                            <span>!</span>
+                            {error}
+                        </div>
+                    )}
 
 
-                <p className="auth-footer">
+                    {success && (
+                        <div className="modern-success">
+                            <span>✓</span>
+                            {success}
+                        </div>
+                    )}
 
-                    Already have an account?
 
-                    {" "}
+                    <form onSubmit={handleSubmit}>
 
-                    <Link to="/login">
-                        Login
-                    </Link>
+                        <div className="modern-form-group">
 
-                </p>
+                            <label>
+                                Full name
+                            </label>
+
+                            <div className="modern-input-wrapper">
+
+                                <span className="input-icon">
+                                    ◉
+                                </span>
+
+                                <input
+                                    type="text"
+                                    placeholder="Enter your full name"
+                                    value={name}
+                                    onChange={(event) =>
+                                        setName(event.target.value)
+                                    }
+                                    required
+                                />
+
+                            </div>
+
+                        </div>
+
+
+                        <div className="modern-form-group">
+
+                            <label>
+                                Email address
+                            </label>
+
+                            <div className="modern-input-wrapper">
+
+                                <span className="input-icon">
+                                    @
+                                </span>
+
+                                <input
+                                    type="email"
+                                    placeholder="you@example.com"
+                                    value={email}
+                                    onChange={(event) =>
+                                        setEmail(event.target.value)
+                                    }
+                                    required
+                                />
+
+                            </div>
+
+                        </div>
+
+
+                        <div className="modern-form-group">
+
+                            <label>
+                                Password
+                            </label>
+
+                            <div className="modern-input-wrapper">
+
+                                <span className="input-icon">
+                                    •
+                                </span>
+
+                                <input
+                                    type={
+                                        showPassword
+                                            ? "text"
+                                            : "password"
+                                    }
+                                    placeholder="At least 6 characters"
+                                    value={password}
+                                    onChange={(event) =>
+                                        setPassword(event.target.value)
+                                    }
+                                    minLength={6}
+                                    required
+                                />
+
+                                <button
+                                    type="button"
+                                    className="password-toggle"
+                                    onClick={() =>
+                                        setShowPassword(
+                                            (previous) => !previous
+                                        )
+                                    }
+                                >
+                                    {showPassword ? "Hide" : "Show"}
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            className="modern-submit"
+                            disabled={loading}
+                        >
+                            {loading
+                                ? "Creating account..."
+                                : "Create Account"}
+
+                            {!loading && (
+                                <span>→</span>
+                            )}
+                        </button>
+
+                    </form>
+
+
+                    <p className="modern-auth-footer">
+
+                        Already have an account?
+
+                        <Link to="/login">
+                            Sign in
+                        </Link>
+
+                    </p>
+
+                </div>
 
             </div>
 
