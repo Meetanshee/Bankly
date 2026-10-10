@@ -2857,3 +2857,805 @@ select option:disabled {
         min-width: 50px;
     }
 }
+
+
+
+/* =========================================================
+   BANKLY — MINIMAL LUXURY FINTECH
+   Warm ivory · forest green · muted lime
+   Visual redesign only. Existing React/API behavior remains.
+   ========================================================= */
+
+:root {
+    --bankly-bg: #f6f6f1;
+    --bankly-bg-2: #eeefe8;
+    --bankly-surface: #ffffff;
+    --bankly-surface-2: #f8f9f5;
+    --bankly-border: #e5e8df;
+    --bankly-border-hover: #cbd5c0;
+    --bankly-text: #17251f;
+    --bankly-text-2: #425149;
+    --bankly-muted: #7d8980;
+    --bankly-muted-2: #9aa39b;
+    --bankly-purple: #1d4939;
+    --bankly-purple-light: #47735e;
+    --bankly-blue: #1d4939;
+    --bankly-cyan: #c8f169;
+    --bankly-gradient: linear-gradient(135deg, #173d32 0%, #285b46 100%);
+    --bankly-green: #1d8a5b;
+    --bankly-red: #c94c4c;
+}
+
+html,
+body,
+#root {
+    min-height: 100%;
+}
+
+body {
+    background: var(--bankly-bg) !important;
+    color: var(--bankly-text) !important;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* -------------------- Login / Register -------------------- */
+
+.modern-auth,
+.auth-page.modern-auth {
+    min-height: 100vh;
+    grid-template-columns: minmax(0, 1.02fr) minmax(420px, .98fr);
+    background: #f8f8f4 !important;
+    color: var(--bankly-text);
+}
+
+.auth-brand-panel {
+    padding: clamp(32px, 5vw, 76px);
+    background:
+        radial-gradient(circle at 85% 18%, rgba(200,241,105,.12), transparent 28%),
+        linear-gradient(145deg, #15392f 0%, #1b4939 58%, #234f3e 100%) !important;
+    border-right: 0;
+}
+
+.auth-brand-panel::before {
+    width: 500px;
+    height: 500px;
+    right: -230px;
+    bottom: -260px;
+    background: radial-gradient(circle, rgba(200,241,105,.12), transparent 68%);
+    filter: none;
+}
+
+.auth-brand-panel::after {
+    width: 420px;
+    height: 420px;
+    left: -240px;
+    top: 38%;
+    border-color: rgba(255,255,255,.08);
+    box-shadow: none;
+}
+
+.auth-brand,
+.auth-brand-content h1,
+.auth-brand-footer {
+    color: #fff;
+}
+
+.auth-brand-icon,
+.mobile-auth-brand .auth-brand-icon {
+    background: #c8f169;
+    color: #173d32;
+    border-radius: 13px;
+    box-shadow: none;
+}
+
+.auth-eyebrow {
+    color: #c8f169;
+    letter-spacing: 2.2px;
+}
+
+.auth-brand-content h1 {
+    max-width: 620px;
+    font-size: clamp(42px, 5vw, 66px);
+    line-height: 1.04;
+    letter-spacing: -2.8px;
+}
+
+.auth-brand-content h1 span {
+    background: linear-gradient(90deg, #c8f169, #e0f5b1);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.auth-brand-content > p {
+    color: rgba(255,255,255,.70);
+    max-width: 470px;
+}
+
+.auth-feature .feature-icon {
+    border: 1px solid rgba(200,241,105,.18);
+    background: rgba(200,241,105,.09);
+    color: #c8f169;
+    border-radius: 12px;
+}
+
+.auth-feature strong {
+    color: #fff;
+}
+
+.auth-feature span {
+    color: rgba(255,255,255,.58);
+}
+
+.auth-brand-footer {
+    color: rgba(255,255,255,.42);
+}
+
+.auth-form-panel {
+    background: #f8f8f4 !important;
+    backdrop-filter: none;
+    padding: 48px;
+}
+
+.auth-form-container {
+    max-width: 420px;
+}
+
+.auth-heading {
+    margin-bottom: 32px;
+}
+
+.auth-form-label {
+    color: #557763;
+    letter-spacing: 1.8px;
+}
+
+.auth-heading h2 {
+    color: #17251f;
+    font-size: 34px;
+    letter-spacing: -1.2px;
+}
+
+.auth-heading p {
+    color: #7d8980;
+}
+
+.modern-form-group label {
+    color: #35463d;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.modern-input-wrapper {
+    min-height: 52px;
+    height: 52px;
+    padding: 0 14px;
+    gap: 10px;
+    background: #fff !important;
+    border: 1px solid #dfe4da !important;
+    border-radius: 11px !important;
+    box-shadow: 0 2px 5px rgba(23,37,31,.02);
+}
+
+.modern-input-wrapper:hover {
+    border-color: #c5d1c1 !important;
+}
+
+.modern-input-wrapper:focus-within {
+    background: #fff !important;
+    border-color: #527763 !important;
+    box-shadow: 0 0 0 3px rgba(29,73,57,.09) !important;
+}
+
+.modern-input-wrapper .input-icon {
+    background: transparent !important;
+    color: #859187 !important;
+    border: 0 !important;
+}
+
+.modern-input-wrapper input,
+.modern-input-wrapper input:focus {
+    background: transparent !important;
+    color: #17251f !important;
+    font-size: 14px;
+}
+
+.modern-input-wrapper input::placeholder {
+    color: #a0aaa1 !important;
+}
+
+.modern-input-wrapper .password-toggle {
+    color: #68776c !important;
+    border-left-color: #e8ece5 !important;
+}
+
+.modern-input-wrapper .password-toggle:hover {
+    color: #1d4939 !important;
+    background: #f4f7ef !important;
+}
+
+.modern-input-wrapper input:-webkit-autofill,
+.modern-input-wrapper input:-webkit-autofill:hover,
+.modern-input-wrapper input:-webkit-autofill:focus,
+.modern-input-wrapper input:-webkit-autofill:active {
+    -webkit-text-fill-color: #17251f !important;
+    -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+    box-shadow: 0 0 0 1000px #fff inset !important;
+}
+
+.modern-submit {
+    height: 51px;
+    margin-top: 5px;
+    border-radius: 11px;
+    background: #1d4939;
+    color: #fff;
+    box-shadow: 0 7px 18px rgba(29,73,57,.14);
+}
+
+.modern-submit:hover {
+    background: #285b46;
+    box-shadow: 0 10px 22px rgba(29,73,57,.18);
+    filter: none;
+}
+
+.modern-auth-footer {
+    color: #7d8980;
+}
+
+.modern-auth-footer a {
+    color: #1d6548;
+}
+
+.modern-auth-footer a:hover {
+    color: #173d32;
+}
+
+.modern-error {
+    background: #fff2f0;
+    border-color: #f1d2cd;
+    color: #a83f36;
+}
+
+.modern-success {
+    background: #eff8e8;
+    border-color: #d7e9c8;
+    color: #2c704a;
+}
+
+/* -------------------- Dashboard shell -------------------- */
+
+.dashboard-container {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 4% 0%, rgba(200,241,105,.08), transparent 23%),
+        #f6f6f1 !important;
+    color: #17251f !important;
+}
+
+.bank-navbar {
+    height: 72px;
+    padding: 0 clamp(18px, 4vw, 54px);
+    background: rgba(250,250,246,.94) !important;
+    border-bottom: 1px solid #e5e8df !important;
+    backdrop-filter: blur(14px);
+}
+
+.brand {
+    color: #173d32 !important;
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -.5px;
+}
+
+.brand-icon {
+    background: #1d4939 !important;
+    color: #c8f169 !important;
+    border-radius: 10px;
+    box-shadow: none !important;
+}
+
+.navbar-account-label {
+    color: #7d8980 !important;
+}
+
+.navbar-account select {
+    background-color: #fff !important;
+    color: #34463b !important;
+    border-color: #e0e5db !important;
+    border-radius: 10px !important;
+}
+
+.navbar-account select:hover,
+.navbar-account select:focus {
+    border-color: #a9bda9 !important;
+    box-shadow: 0 0 0 3px rgba(29,73,57,.07) !important;
+}
+
+.navbar-add-account {
+    background: #1d4939 !important;
+    color: #fff !important;
+    border-radius: 10px;
+    box-shadow: none !important;
+}
+
+.navbar-add-account:hover {
+    background: #285b46 !important;
+    filter: none;
+}
+
+.profile-button {
+    color: #17251f !important;
+}
+
+.profile-button:hover {
+    background: #eef1e9 !important;
+}
+
+.user-avatar,
+.large-avatar {
+    background: #dce9d0 !important;
+    color: #1d4939 !important;
+    box-shadow: none !important;
+}
+
+.profile-name strong {
+    color: #26392e !important;
+}
+
+.profile-name span,
+.profile-arrow {
+    color: #829086 !important;
+}
+
+.profile-dropdown {
+    background: #fff !important;
+    border: 1px solid #e2e7de !important;
+    border-radius: 15px;
+    box-shadow: 0 18px 45px rgba(27,48,36,.12) !important;
+    backdrop-filter: blur(12px);
+}
+
+.profile-dropdown-header strong {
+    color: #17251f !important;
+}
+
+.profile-dropdown-header span,
+.dropdown-title,
+.profile-detail span {
+    color: #7d8980 !important;
+}
+
+.profile-detail strong {
+    color: #34463b !important;
+}
+
+.dropdown-divider {
+    background: #edf0e9 !important;
+}
+
+.profile-action {
+    color: #425149;
+}
+
+.profile-action:hover {
+    background: #f4f6f0 !important;
+}
+
+.profile-action.edit {
+    color: #1d6548 !important;
+}
+
+.profile-action.danger,
+.logout-button {
+    color: #c94c4c !important;
+}
+
+.logout-button:hover {
+    background: #fff2f0 !important;
+}
+
+.profile-edit-form label {
+    color: #425149 !important;
+}
+
+.profile-edit-form input {
+    background: #fff !important;
+    border-color: #dfe4da !important;
+    color: #17251f !important;
+}
+
+.profile-edit-form input:focus {
+    border-color: #7b9b82 !important;
+    box-shadow: 0 0 0 3px rgba(29,73,57,.08) !important;
+}
+
+.readonly-mini {
+    background: #f4f6f0 !important;
+    color: #425149 !important;
+}
+
+.readonly-mini span {
+    color: #7d8980 !important;
+}
+
+.save-profile {
+    background: #1d4939 !important;
+}
+
+.cancel-profile {
+    border-color: #dfe4da !important;
+    background: #fff !important;
+    color: #425149 !important;
+}
+
+/* -------------------- Welcome and cards -------------------- */
+
+.dashboard-content {
+    width: min(1160px, calc(100% - 48px));
+    padding: 42px 0 76px;
+}
+
+.welcome-section {
+    margin-bottom: 30px;
+}
+
+.welcome-label {
+    color: #62816a !important;
+    font-size: 10px;
+    letter-spacing: 1.9px;
+}
+
+.welcome-section h1 {
+    color: #17251f !important;
+    font-size: clamp(28px, 3vw, 36px);
+    letter-spacing: -1.2px;
+}
+
+.welcome-section > div > p:last-child {
+    color: #7d8980 !important;
+}
+
+.dashboard-card {
+    padding: 26px;
+    background: #fff !important;
+    border: 1px solid #e6e9e1 !important;
+    border-radius: 16px;
+    box-shadow: 0 5px 18px rgba(29,49,37,.035) !important;
+    backdrop-filter: none;
+    transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+.dashboard-card:hover {
+    border-color: #d6dfd0 !important;
+    box-shadow: 0 9px 24px rgba(29,49,37,.055) !important;
+}
+
+.card-header h2,
+.transaction-header h2 {
+    color: #1b2b22 !important;
+    font-size: 17px;
+    letter-spacing: -.25px;
+}
+
+.card-header p,
+.transaction-header p {
+    color: #849087 !important;
+}
+
+/* -------------------- Balance feature card -------------------- */
+
+.balance-card {
+    min-height: 190px;
+    padding: 29px 30px;
+    border: 0 !important;
+    border-radius: 17px;
+    background:
+        radial-gradient(circle at 88% 15%, rgba(200,241,105,.20), transparent 25%),
+        linear-gradient(125deg, #173d32 0%, #21513e 72%, #2a5a43 100%) !important;
+    box-shadow: 0 12px 26px rgba(23,61,50,.13) !important;
+}
+
+.balance-card::before {
+    content: "";
+    position: absolute;
+    width: 210px;
+    height: 210px;
+    right: -55px;
+    top: -110px;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.balance-card::after {
+    background: rgba(200,241,105,.08) !important;
+}
+
+.balance-top span {
+    color: rgba(255,255,255,.72) !important;
+}
+
+.balance-top h2 {
+    color: #fff !important;
+    font-size: clamp(30px, 3.5vw, 40px);
+    letter-spacing: -1.3px;
+}
+
+.balance-account-type {
+    background: rgba(255,255,255,.09) !important;
+    border-color: rgba(255,255,255,.17) !important;
+    color: #e3f4c8 !important;
+}
+
+.balance-bottom span {
+    color: rgba(255,255,255,.56) !important;
+}
+
+.balance-bottom strong {
+    color: #fff !important;
+}
+
+/* -------------------- Form controls and buttons -------------------- */
+
+.dashboard-container .form-group label {
+    color: #425149 !important;
+}
+
+.dashboard-container .form-group > input,
+.dashboard-container .form-group > select {
+    height: 43px;
+    background-color: #fff !important;
+    color: #26392e !important;
+    border: 1px solid #dfe4da !important;
+    border-radius: 9px !important;
+}
+
+.dashboard-container .form-group > input::placeholder {
+    color: #a0aaa1;
+}
+
+.dashboard-container .form-group > input:focus,
+.dashboard-container .form-group > select:focus {
+    border-color: #789781 !important;
+    box-shadow: 0 0 0 3px rgba(29,73,57,.07) !important;
+}
+
+.dashboard-container .primary-button {
+    background: #1d4939 !important;
+    color: #fff !important;
+    border-radius: 9px;
+    box-shadow: none !important;
+}
+
+.dashboard-container .primary-button:hover {
+    background: #285b46 !important;
+    transform: translateY(-1px);
+    filter: none;
+}
+
+.dashboard-container .secondary-button {
+    background: #fff !important;
+    border-color: #dfe4da !important;
+    color: #425149 !important;
+    border-radius: 9px;
+}
+
+.dashboard-container .secondary-button:hover {
+    background: #f5f7f1 !important;
+}
+
+.amount-input {
+    background: #fff !important;
+    border-color: #dfe4da !important;
+    border-radius: 9px;
+}
+
+.amount-input span {
+    color: #7d8980 !important;
+}
+
+.amount-input input {
+    background: transparent !important;
+    color: #17251f !important;
+}
+
+.transaction-submit {
+    border-radius: 9px;
+    box-shadow: none;
+}
+
+.transaction-submit.deposit {
+    background: #1d8a5b !important;
+}
+
+.transaction-submit.deposit:hover {
+    background: #176f49 !important;
+}
+
+.transaction-submit.withdraw {
+    background: #c94c4c !important;
+}
+
+.transaction-submit.withdraw:hover {
+    background: #ad3d3d !important;
+}
+
+/* -------------------- Transaction filters and rows -------------------- */
+
+.transaction-filters {
+    padding: 4px;
+    background: #f2f4ee !important;
+    border: 1px solid #e7ebe2;
+    border-radius: 9px;
+}
+
+.filter-button {
+    color: #7d8980 !important;
+    border-radius: 7px;
+}
+
+.filter-button:hover {
+    color: #26392e !important;
+}
+
+.filter-button.active {
+    background: #fff !important;
+    color: #1d4939 !important;
+    box-shadow: 0 1px 4px rgba(29,49,37,.08) !important;
+}
+
+.transaction-item {
+    border-bottom-color: #edf0e9 !important;
+}
+
+.deposit-icon {
+    background: #eaf6ee !important;
+    color: #1d8a5b !important;
+}
+
+.withdraw-icon {
+    background: #fff0ee !important;
+    color: #c94c4c !important;
+}
+
+.transaction-info strong {
+    color: #34463b !important;
+}
+
+.transaction-info span,
+.transaction-amount span {
+    color: #929c93 !important;
+}
+
+.amount-positive {
+    color: #1d8a5b !important;
+}
+
+.amount-negative {
+    color: #c94c4c !important;
+}
+
+.empty-state {
+    color: #849087 !important;
+}
+
+.empty-icon {
+    background: #f1f4ed !important;
+    color: #89968b !important;
+}
+
+.empty-state strong {
+    color: #425149 !important;
+}
+
+.loading-message {
+    background: #f6f6f1 !important;
+    color: #7d8980 !important;
+}
+
+/* -------------------- All native select controls -------------------- */
+
+select,
+.navbar-account select,
+.dashboard-container select,
+.account-form select {
+    color-scheme: light;
+    background-color: #fff !important;
+    color: #34463b !important;
+    border: 1px solid #dfe4da !important;
+    border-radius: 9px !important;
+}
+
+select option {
+    background: #fff !important;
+    color: #26392e !important;
+}
+
+select:focus,
+.navbar-account select:focus,
+.dashboard-container select:focus,
+.account-form select:focus {
+    border-color: #789781 !important;
+    box-shadow: 0 0 0 3px rgba(29,73,57,.07) !important;
+}
+
+/* Keep navbar account selector compact */
+
+.navbar-account select {
+    width: auto;
+    min-width: 190px;
+    height: 39px;
+    min-height: 39px;
+}
+
+/* -------------------- Responsive refinement -------------------- */
+
+@media (max-width: 900px) {
+    .modern-auth {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-brand-panel {
+        display: none;
+    }
+
+    .auth-form-panel {
+        min-height: 100vh;
+        padding: 32px 24px;
+    }
+
+    .mobile-auth-brand {
+        color: #173d32 !important;
+    }
+}
+
+@media (max-width: 650px) {
+    .bank-navbar {
+        background: rgba(250,250,246,.97) !important;
+    }
+
+    .navbar-account select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .dashboard-content {
+        width: calc(100% - 28px);
+        padding: 28px 0 48px;
+    }
+
+    .dashboard-card {
+        padding: 19px;
+        border-radius: 14px;
+    }
+
+    .balance-card {
+        padding: 23px;
+    }
+
+    .transaction-header {
+        gap: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-form-panel {
+        padding: 24px 18px;
+    }
+
+    .auth-heading h2 {
+        font-size: 28px;
+    }
+
+    .modern-input-wrapper {
+        min-height: 50px;
+        height: 50px;
+    }
+
+    .dashboard-content {
+        width: calc(100% - 22px);
+    }
+
+    .balance-top h2 {
+        font-size: 29px;
+    }
+}
