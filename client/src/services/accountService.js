@@ -14,7 +14,7 @@ export const getAccountBalance = async (accountId) => {
 
 
 export const getTransactions = async ( accountId, type = "") => {
-    const url = type? `/accounts/${accountId}/transactions?type=${type}`: `/accounts/${accountId}transactions`;
+    const url = type? `/accounts/${accountId}/transactions?type=${type}`: `/accounts/${accountId}/transactions`;
     const response = await api.get(url);
     return response.data;
 };
