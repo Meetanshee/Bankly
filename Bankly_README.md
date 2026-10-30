@@ -1,4 +1,4 @@
-# Bankly - Banking Management System 1
+# Bankly - Banking Management System 
 
 Bankly is a full-stack banking application built with the PERN stack. It provides user authentication, bank account management, deposits, withdrawals, balance tracking, and transaction history through a React frontend and Express/PostgreSQL backend.
 
