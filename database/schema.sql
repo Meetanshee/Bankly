@@ -1,11 +1,11 @@
 CREATE TABLE accounts (
     id SERIAL PRIMARY KEY,
 
+    user_id INTEGER NOT NULL,
+
     account_number VARCHAR(10) UNIQUE NOT NULL,
 
     account_holder_name VARCHAR(100) NOT NULL,
-
-    email VARCHAR(150) UNIQUE NOT NULL,
 
     account_type VARCHAR(20) NOT NULL
         CHECK (account_type IN ('SAVINGS', 'CURRENT')),
@@ -16,8 +16,14 @@ CREATE TABLE accounts (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT accounts_account_number_format
-        CHECK (account_number ~ '^[0-9]{10}$')
+        CHECK (account_number ~ '^[0-9]{10}$'),
+
+    CONSTRAINT fk_accounts_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
 );
+
 
 
 CREATE TABLE transactions (
@@ -37,7 +43,8 @@ CREATE TABLE transactions (
     transaction_date TIMESTAMP NOT NULL
         DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (account_id)
+    CONSTRAINT fk_transactions_account
+        FOREIGN KEY (account_id)
         REFERENCES accounts(id)
         ON DELETE CASCADE
 );
