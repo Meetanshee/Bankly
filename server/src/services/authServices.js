@@ -3,38 +3,26 @@ import bcrypt from "bcryptjs";
 import pool from "../config/db.js";
 import { generateToken } from "../utils/jwt.js";
 
-export const registerUser = async (
-    name,
-    email,
-    password
-) => {
-    const existingUserQuery = `
+export const registerUser = async (name, email, password) => {
+  const existingUserQuery = `
         SELECT id
         FROM users
         WHERE email = $1;
     `;
 
-    const existingUserResult = await pool.query(
-        existingUserQuery,
-        [email]
-    );
+  const existingUserResult = await pool.query(existingUserQuery, [email]);
 
-    if (existingUserResult.rows.length > 0) {
-        const error = new Error(
-            "User with this email already exists"
-        );
+  if (existingUserResult.rows.length > 0) {
+    const error = new Error("User with this email already exists");
 
-        error.statusCode = 409;
+    error.statusCode = 409;
 
-        throw error;
-    }
+    throw error;
+  }
 
-    const hashedPassword = await bcrypt.hash(
-        password,
-        10
-    );
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-    const query = `
+  const query = `
         INSERT INTO users
         (
             name,
@@ -49,64 +37,49 @@ export const registerUser = async (
             created_at;
     `;
 
-    const result = await pool.query(query, [
-        name,
-        email,
-        hashedPassword
-    ]);
+  const result = await pool.query(query, [name, email, hashedPassword]);
 
-    return result.rows[0];
+  return result.rows[0];
 };
 
-
-export const loginUser = async (
-    email,
-    password
-) => {
-    const query = `
+export const loginUser = async (email, password) => {
+  const query = `
         SELECT *
         FROM users
         WHERE email = $1;
     `;
 
-    const result = await pool.query(query, [email]);
+  const result = await pool.query(query, [email]);
 
-    if (result.rows.length === 0) {
-        const error = new Error(
-            "Invalid email or password"
-        );
+  if (result.rows.length === 0) {
+    const error = new Error("Invalid email");
 
-        error.statusCode = 401;
+    error.statusCode = 401;
 
-        throw error;
-    }
+    throw error;
+  }
 
-    const user = result.rows[0];
+  const user = result.rows[0];
 
-    const isPasswordValid = await bcrypt.compare(
-        password,
-        user.password
-    );
+  const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordValid) {
-        const error = new Error(
-            "Invalid email or password"
-        );
+  if (!isPasswordValid) {
+    const error = new Error("Invalid password");
 
-        error.statusCode = 401;
+    error.statusCode = 401;
 
-        throw error;
-    }
+    throw error;
+  }
 
-    const token = generateToken(user);
+  const token = generateToken(user);
 
-    return {
-        user: {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            createdAt: user.created_at
-        },
-        token
-    };
+  return {
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      createdAt: user.created_at,
+    },
+    token,
+  };
 };

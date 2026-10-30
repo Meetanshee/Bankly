@@ -1,24 +1,10 @@
-import {
-    registerUser,
-    loginUser
-} from "../services/authServices.js";
+import {registerUser, loginUser} from "../services/authServices.js";
 
 
-export const registerController = async (
-    req,
-    res
-) => {
-    const {
-        name,
-        email,
-        password
-    } = req.body;
+export const registerController = async (req,res) => {
+    const {name,email,password} = req.body;
 
-    const user = await registerUser(
-        name,
-        email,
-        password
-    );
+    const user = await registerUser(name,email,password );
 
     res.status(201).json({
         success: true,
@@ -33,19 +19,10 @@ export const registerController = async (
 };
 
 
-export const loginController = async (
-    req,
-    res
-) => {
-    const {
-        email,
-        password
-    } = req.body;
+export const loginController = async (req,res) => {
+    const { email, password} = req.body;
 
-    const result = await loginUser(
-        email,
-        password
-    );
+    const result = await loginUser(email,password);
 
     res.status(200).json({
         success: true,

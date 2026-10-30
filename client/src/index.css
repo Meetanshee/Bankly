@@ -3659,3 +3659,22 @@ select:focus,
         font-size: 29px;
     }
 }
+
+.forgot-password-row {
+    display: flex;
+    justify-content: flex-end;
+    margin: -6px 0 20px;
+}
+
+.forgot-password-row a {
+    color: #BD5F3A;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.forgot-password-row a:hover {
+    color: #944326;
+    text-decoration: underline;
+}

@@ -10,32 +10,17 @@ import {
     getTransactionHistory
 } from "../services/accountService.js";
 
-import {
-    mapAccount,
-    mapBalance
-} from "../utils/accountMapper.js";
+import { mapAccount, mapBalance} from "../utils/accountMapper.js";
 
-import {
-    mapTransactions
-} from "../utils/transactionMapper.js";
+import { mapTransactions} from "../utils/transactionMapper.js";
 
 
-export const createAccountController = async (
-    req,
-    res
-) => {
-    const {
-        account_holder_name,
-        account_type
-    } = req.body;
+export const createAccountController = async (req,res) => {
+    const {account_holder_name,account_type} = req.body;
 
     const userId = req.user.id;
 
-    const account = await createAccount(
-        userId,
-        account_holder_name,
-        account_type.toUpperCase()
-    );
+    const account = await createAccount(userId,account_holder_name,account_type.toUpperCase() );
 
     res.status(201).json({
         success: true,
@@ -45,10 +30,7 @@ export const createAccountController = async (
 };
 
 
-export const getAllAccountsController = async (
-    req,
-    res
-) => {
+export const getAllAccountsController = async (req,res) => {
     const userId = req.user.id;
 
     const accounts = await getAllAccounts(userId);
@@ -60,17 +42,11 @@ export const getAllAccountsController = async (
 };
 
 
-export const getAccountByIdController = async (
-    req,
-    res
-) => {
+export const getAccountByIdController = async ( req, res) => {
     const { id } = req.params;
     const userId = req.user.id;
 
-    const account = await getAccountById(
-        id,
-        userId
-    );
+    const account = await getAccountById(id,userId);
 
     if (!account) {
         return res.status(404).json({
@@ -91,11 +67,7 @@ export const updateAccountController = async (req, res) => {
     const { account_holder_name } = req.body;
     const userId = req.user.id;
 
-    const account = await updateAccount(
-        id,
-        account_holder_name,
-        userId
-    );
+    const account = await updateAccount(id,account_holder_name,userId);
 
     if (!account) {
         return res.status(404).json({
@@ -112,18 +84,12 @@ export const updateAccountController = async (req, res) => {
 };
 
 
-export const deleteAccountController = async (
-    req,
-    res
-) => {
+export const deleteAccountController = async (req,res) => {
     const { id } = req.params;
 
     const userId = req.user.id;
 
-    const account = await deleteAccount(
-        id,
-        userId
-    );
+    const account = await deleteAccount(id,userId);
 
     if (!account) {
         return res.status(404).json({
@@ -136,20 +102,13 @@ export const deleteAccountController = async (
 };
 
 
-export const depositController = async (
-    req,
-    res
-) => {
+export const depositController = async (req,res) => {
     const { id } = req.params;
     const { amount } = req.body;
 
     const userId = req.user.id;
 
-    const account = await depositMoney(
-        id,
-        Number(amount),
-        userId
-    );
+    const account = await depositMoney( id, Number(amount), userId);
 
     res.status(200).json({
         success: true,
@@ -159,20 +118,13 @@ export const depositController = async (
 };
 
 
-export const withdrawController = async (
-    req,
-    res
-) => {
+export const withdrawController = async (req,res) => {
     const { id } = req.params;
     const { amount } = req.body;
 
     const userId = req.user.id;
 
-    const account = await withdrawMoney(
-        id,
-        Number(amount),
-        userId
-    );
+    const account = await withdrawMoney(id,Number(amount),userId);
 
     res.status(200).json({
         success: true,
@@ -182,18 +134,12 @@ export const withdrawController = async (
 };
 
 
-export const getBalanceController = async (
-    req,
-    res
-) => {
+export const getBalanceController = async ( req,res) => {
     const { id } = req.params;
 
     const userId = req.user.id;
 
-    const balance = await getAccountBalance(
-        id,
-        userId
-    );
+    const balance = await getAccountBalance(id,userId);
 
     if (!balance) {
         return res.status(404).json({
@@ -209,21 +155,14 @@ export const getBalanceController = async (
 };
 
 
-export const getTransactionsController = async (
-    req,
-    res
-) => {
+export const getTransactionsController = async (req, res) => {
     const { id } = req.params;
 
-    const transactionType =
-        req.query.type?.toUpperCase();
+    const transactionType = req.query.type?.toUpperCase();
 
     const userId = req.user.id;
 
-    const account = await getAccountById(
-        id,
-        userId
-    );
+    const account = await getAccountById( id, userId);
 
     if (!account) {
         return res.status(404).json({
@@ -232,12 +171,7 @@ export const getTransactionsController = async (
         });
     }
 
-    const transactions =
-        await getTransactionHistory(
-            id,
-            userId,
-            transactionType
-        );
+    const transactions = await getTransactionHistory(id,userId,transactionType);
 
     res.status(200).json({
         success: true,

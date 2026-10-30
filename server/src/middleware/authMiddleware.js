@@ -1,10 +1,6 @@
 import jwt from "jsonwebtoken";
 
-export const authenticate = (
-    req,
-    res,
-    next
-) => {
+export const authenticate = ( req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -16,10 +12,7 @@ export const authenticate = (
 
     const parts = authHeader.split(" ");
 
-    if (
-        parts.length !== 2 ||
-        parts[0] !== "Bearer"
-    ) {
+    if ( parts.length !== 2 || parts[0] !== "Bearer") {
         return res.status(401).json({
             success: false,
             message: "Invalid authorization format"
