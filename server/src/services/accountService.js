@@ -2,11 +2,7 @@ import pool from "../config/db.js";
 import generateAccountNumber from "../utils/accountNumberGenerator.js";
 
 // Create a new bank account
-export const createAccount = async (
-    userId,
-    accountHolderName,
-    accountType
-) => {
+export const createAccount = async (userId,accountHolderName,accountType) =>{
     let accountNumber;
     let result;
 
@@ -59,10 +55,7 @@ export const getAllAccounts = async (userId) => {
 
 
 // Get one account belonging to logged-in user
-export const getAccountById = async (
-    id,
-    userId
-) => {
+export const getAccountById = async (id,userId) => {
     const query = `
         SELECT *
         FROM accounts
@@ -70,21 +63,14 @@ export const getAccountById = async (
         AND user_id = $2;
     `;
 
-    const result = await pool.query(query, [
-        id,
-        userId
-    ]);
+    const result = await pool.query(query, [id,userId]);
 
     return result.rows[0];
 };
 
 
 // Update account information
-export const updateAccount = async (
-    id,
-    accountHolderName,
-    userId
-) => {
+export const updateAccount = async (id, accountHolderName,userId) => {
     const query = `
         UPDATE accounts
         SET account_holder_name = $1
@@ -93,21 +79,14 @@ export const updateAccount = async (
         RETURNING *;
     `;
 
-    const result = await pool.query(query, [
-        accountHolderName,
-        id,
-        userId
-    ]);
+    const result = await pool.query(query, [ accountHolderName, id, userId]);
 
     return result.rows[0];
 };
 
 
 // Permanently delete account
-export const deleteAccount = async (
-    id,
-    userId
-) => {
+export const deleteAccount = async (id,userId) => {
     const query = `
         DELETE FROM accounts
         WHERE id = $1
@@ -115,21 +94,14 @@ export const deleteAccount = async (
         RETURNING *;
     `;
 
-    const result = await pool.query(query, [
-        id,
-        userId
-    ]);
+    const result = await pool.query(query, [id,userId]);
 
     return result.rows[0];
 };
 
 
 // Deposit money
-export const depositMoney = async (
-    id,
-    amount,
-    userId
-) => {
+export const depositMoney = async ( id, amount, userId) => {
     const client = await pool.connect();
 
     try {
@@ -143,10 +115,7 @@ export const depositMoney = async (
             FOR UPDATE;
         `;
 
-        const accountResult = await client.query(
-            accountQuery,
-            [id, userId]
-        );
+        const accountResult = await client.query(accountQuery,[id, userId]);
 
         if (accountResult.rows.length === 0) {
             const error = new Error(
@@ -158,13 +127,8 @@ export const depositMoney = async (
             throw error;
         }
 
-        if (
-            !Number.isFinite(amount) ||
-            amount <= 0
-        ) {
-            const error = new Error(
-                "Deposit amount must be greater than 0"
-            );
+        if (!Number.isFinite(amount) ||amount <= 0) {
+            const error = new Error( "Deposit amount must be greater than 0");
 
             error.statusCode = 400;
 
@@ -179,14 +143,9 @@ export const depositMoney = async (
             RETURNING *;
         `;
 
-        const updatedAccountResult =
-            await client.query(
-                updateQuery,
-                [amount, id, userId]
-            );
+        const updatedAccountResult = await client.query( updateQuery, [amount, id, userId]);
 
-        const updatedAccount =
-            updatedAccountResult.rows[0];
+        const updatedAccount = updatedAccountResult.rows[0];
 
         const transactionQuery = `
             INSERT INTO transactions
@@ -200,8 +159,7 @@ export const depositMoney = async (
             RETURNING *;
         `;
 
-        await client.query(
-            transactionQuery,
+        await client.query( transactionQuery,
             [
                 id,
                 "DEPOSIT",
@@ -229,11 +187,7 @@ export const depositMoney = async (
 
 
 // Withdraw money
-export const withdrawMoney = async (
-    id,
-    amount,
-    userId
-) => {
+export const withdrawMoney = async ( id, amount, userId) => {
     const client = await pool.connect();
 
     try {
@@ -247,15 +201,10 @@ export const withdrawMoney = async (
             FOR UPDATE;
         `;
 
-        const accountResult = await client.query(
-            accountQuery,
-            [id, userId]
-        );
+        const accountResult = await client.query( accountQuery, [id, userId]);
 
         if (accountResult.rows.length === 0) {
-            const error = new Error(
-                "Account not found"
-            );
+            const error = new Error("Account not found" );
 
             error.statusCode = 404;
 
@@ -264,29 +213,17 @@ export const withdrawMoney = async (
 
         const account = accountResult.rows[0];
 
-        if (
-            !Number.isFinite(amount) ||
-            amount <= 0
-        ) {
-            const error = new Error(
-                "Withdrawal amount must be greater than 0"
-            );
+        if ( !Number.isFinite(amount) || amount <= 0 ) {
+            const error = new Error(  "Withdrawal amount must be greater than 0" );
 
             error.statusCode = 400;
 
             throw error;
         }
 
-        if (
-            Number(account.balance) < amount
-        ) {
-            const error = new Error(
-                `Insufficient balance. Requested: ${amount.toFixed(
-                    2
-                )}, Available: ${Number(
-                    account.balance
-                ).toFixed(2)}`
-            );
+        if (  Number(account.balance) < amount) {
+            const error = new Error( `Insufficient balance. Requested: ${amount.toFixed(2)},
+             Available: ${Number(account.balance ).toFixed(2)}`);
 
             error.statusCode = 422;
 
@@ -301,14 +238,9 @@ export const withdrawMoney = async (
             RETURNING *;
         `;
 
-        const updatedAccountResult =
-            await client.query(
-                updateQuery,
-                [amount, id, userId]
-            );
+        const updatedAccountResult = await client.query( updateQuery,[amount, id, userId]);
 
-        const updatedAccount =
-            updatedAccountResult.rows[0];
+        const updatedAccount = updatedAccountResult.rows[0];
 
         const transactionQuery = `
             INSERT INTO transactions
@@ -351,10 +283,7 @@ export const withdrawMoney = async (
 
 
 // Get account balance
-export const getAccountBalance = async (
-    id,
-    userId
-) => {
+export const getAccountBalance = async ( id, userId) => {
     const query = `
         SELECT
             id,
@@ -365,21 +294,14 @@ export const getAccountBalance = async (
         AND user_id = $2;
     `;
 
-    const result = await pool.query(
-        query,
-        [id, userId]
-    );
+    const result = await pool.query(query,[id, userId] );
 
     return result.rows[0];
 };
 
 
 // Get transaction history
-export const getTransactionHistory = async (
-    id,
-    userId,
-    transactionType
-) => {
+export const getTransactionHistory = async ( id, userId, transactionType) => {
     let query = `
         SELECT
             t.id,
@@ -395,10 +317,7 @@ export const getTransactionHistory = async (
         AND a.user_id = $2
     `;
 
-    const values = [
-        id,
-        userId
-    ];
+    const values = [ id, userId];
 
     if (transactionType) {
         query += `

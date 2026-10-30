@@ -1,22 +1,13 @@
-import {
-    createContext,
-    useContext,
-    useState
-} from "react";
+import { createContext, useContext, useState} from "react";
 
-import {
-    loginUser,
-    registerUser
-} from "../services/authService";
+import { loginUser, registerUser} from "../services/authService";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState(
-        JSON.parse(
-            localStorage.getItem("user")
-        )
+        JSON.parse( localStorage.getItem("user") )
     );
 
     const [token, setToken] = useState(
@@ -24,29 +15,14 @@ export const AuthProvider = ({ children }) => {
     );
 
 
-    const login = async (
-        email,
-        password
-    ) => {
-        const response = await loginUser(
-            email,
-            password
-        );
+    const login = async ( email, password) => {
+        const response = await loginUser( email, password);
 
-        const {
-            user,
-            token
-        } = response.data;
+        const { user, token } = response.data;
 
-        localStorage.setItem(
-            "user",
-            JSON.stringify(user)
-        );
+        localStorage.setItem("user",JSON.stringify(user));
 
-        localStorage.setItem(
-            "token",
-            token
-        );
+        localStorage.setItem( "token", token);
 
         setUser(user);
         setToken(token);
@@ -55,16 +31,8 @@ export const AuthProvider = ({ children }) => {
     };
 
 
-    const register = async (
-        name,
-        email,
-        password
-    ) => {
-        return await registerUser(
-            name,
-            email,
-            password
-        );
+    const register = async ( name, email, password) => {
+        return await registerUser(name,email,password );
     };
 
 
@@ -78,16 +46,7 @@ export const AuthProvider = ({ children }) => {
 
 
     return (
-        <AuthContext.Provider
-            value={{
-                user,
-                token,
-                login,
-                register,
-                logout,
-                isAuthenticated: !!token
-            }}
-        >
+        <AuthContext.Provider value={{ user, token, login, register, logout, isAuthenticated: !!token}} >
             {children}
         </AuthContext.Provider>
     );
